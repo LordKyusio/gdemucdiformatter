@@ -43,7 +43,7 @@ def gdi_file_formatter():
             print('Moved {} to {}'.format(input_files[i], f"{output_files[0]}/{folder_name}/{f'disc.{file_format}'}"))
         elif file_format in ['gdi']:
             path = input_files[i]
-            while path[-1] != '/':
+            while path[-1] not in ('/', '\\'):
                 path = path[:-1]
             for file in os.listdir(path):
                 if os.path.isfile(os.path.join(path, file)) and not any(x in file for x in ['cdi', 'iso']):
