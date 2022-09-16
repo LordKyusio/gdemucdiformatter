@@ -10,5 +10,5 @@ Install Python 3.10
 
 run:
 ```sh
-python main.js
+python main.py
 ```
