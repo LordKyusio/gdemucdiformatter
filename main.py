@@ -26,7 +26,7 @@ def gdi_file_formatter():
     for supported_format in supported_formats:
         input_files += glob.glob(os.path.join(BASE_PATH, 'INPUT', f'**/*.{supported_format}'), recursive=True)
 
-    output_folders = os.listdir(os.path.join(OUTPUT_PATH))
+    output_folders = os.listdir(OUTPUT_PATH)
     folder_number = 2  # folder 01 is reserved for GDEMU settings file
 
     for input_file in input_files:
@@ -34,7 +34,7 @@ def gdi_file_formatter():
             folder_number += 1
         folder_name = str(folder_number).zfill(2)
         os.mkdir(os.path.join(OUTPUT_PATH, folder_name))
-        output_folders = os.listdir(os.path.join(OUTPUT_PATH))
+        output_folders = os.listdir(OUTPUT_PATH)
         file_format = input_file[-3:]
 
         if file_format in [CDI, ISO]:
