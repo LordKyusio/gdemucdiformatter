@@ -4,6 +4,7 @@ import glob
 import typing
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+OUTPUT_PATH = os.path.join(BASE_PATH, 'OUTPUT')
 
 CDI = 'cdi'
 ISO = 'iso'
@@ -11,7 +12,7 @@ GDI = 'gdi'
 
 
 def gdi_file_formatter():
-    folders = os.listdir(os.curdir)
+    folders = os.listdir(BASE_PATH)
     supported_formats = (CDI, ISO, GDI)
     input_files = []
 
@@ -25,24 +26,21 @@ def gdi_file_formatter():
     for supported_format in supported_formats:
         input_files += glob.glob(os.path.join(BASE_PATH, 'INPUT', f'**/*.{supported_format}'), recursive=True)
 
-    output_folders = os.listdir(os.path.join(os.curdir, 'OUTPUT'))
-    output_files = glob.glob(os.path.join(os.getcwd(), 'OUTPUT'), recursive=True)
-
+    output_folders = os.listdir(os.path.join(OUTPUT_PATH))
     folder_number = 2  # folder 01 is reserved for GDEMU settings file
 
     for input_file in input_files:
-        while '0' + str(folder_number) in output_folders or str(folder_number) in output_folders:
+        while str(folder_number).zfill(2) in output_folders:
             folder_number += 1
-        folder_name = f'0{folder_number}' if folder_number < 10 else f'{folder_number}'
-
-        os.mkdir(os.path.join(output_files[0], folder_name))
-        output_folders = os.listdir(os.path.join(os.curdir, 'OUTPUT'))
+        folder_name = str(folder_number).zfill(2)
+        os.mkdir(os.path.join(OUTPUT_PATH, folder_name))
+        output_folders = os.listdir(os.path.join(OUTPUT_PATH))
         file_format = input_file[-3:]
 
         if file_format in [CDI, ISO]:
-            shutil.copy(input_file, os.path.join(output_files[0], folder_name, f'disc.{file_format}'))
+            shutil.copy(input_file, os.path.join(OUTPUT_PATH, folder_name, f'disc.{file_format}'))
             print('Moved {} to {}'
-                  .format(input_file, os.path.join(output_files[0], folder_name, f'disc.{file_format}')))
+                  .format(input_file, os.path.join(OUTPUT_PATH, folder_name, f'disc.{file_format}')))
         elif file_format == GDI:
             path = input_file
             while path[-1] not in ('/', '\\'):
@@ -50,12 +48,12 @@ def gdi_file_formatter():
             for file in os.listdir(path):
                 if os.path.isfile(os.path.join(path, file)) and not file.endswith((CDI, ISO)):
                     if file.endswith(GDI):
-                        shutil.copy(os.path.join(path, file), os.path.join(output_files[0], folder_name, 'disc.gdi'))
+                        shutil.copy(os.path.join(path, file), os.path.join(OUTPUT_PATH, folder_name, 'disc.gdi'))
                     else:
-                        shutil.copy(os.path.join(path, file), os.path.join(output_files[0], folder_name))
+                        shutil.copy(os.path.join(path, file), os.path.join(OUTPUT_PATH, folder_name))
 
                     print('Moving GDI file {} from {} to {}'
-                          .format(file, path, os.path.join(output_files[0], folder_name)))
+                          .format(file, path, os.path.join(OUTPUT_PATH, folder_name)))
         else:
             folder_number -= 1
         folder_number += 1
